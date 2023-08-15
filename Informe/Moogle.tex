@@ -1,0 +1,116 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsfonts}
+\usepackage{graphicx}
+%\usepackage[spanish]{babel}
+\title{Proyecto Intrasemestral de Programaci\'on\\Moogle!}
+\author{Christopher Guerra Herrero}
+\date{Septiembre, 2022}
+\pagestyle{headings}
+
+
+\begin{document}
+
+    \begin{figure}
+        \begin{center}
+            \includegraphics[scale=0.30]{Moogle.png}
+        \end{center}
+    \end{figure}
+
+    \begin {titlepage}
+        \centering
+        {\bfseries\LARGE Universidad de la Habana \par}
+        \vspace{1cm}
+        {\scshape\Large Facultad de Matem\'atica y Computaci\'on \par}
+        \vspace{3cm}
+        {\itshape\Large Proyecto Intrasemestral de Programaci\'on\\ Moogle! \par}
+        \vfill
+        {\Large Autor: \par}
+        {\Large Christopher Guerra Herrero \par}
+        {\Large Septiembre, 2022}
+    \end {titlepage}
+
+
+    \newpage
+    \section{Informaci\'on b\'asica}
+        \subsection{Google, pero con M}
+            Moogle es un {\it buscador} creado con C\# para el back-end y Razor para la
+            interfaz. Su objetivo es, dado una {\it consulta} y un conjunto de ficheros
+            .txt, indicarle al usuario que documentos se asemejan m\'as a su b\'usqueda.\\
+                Con en el fin de hacer m\'as grata la experiencia del usuario, nuestro programa
+            cuenta con una serie de herramientas para hacer m\'as eficiente la b\'usqueda (operadores),
+             y sugiere consultas semejantes a la hecha por el usuario, cuando esta no tiene resultados.
+            Para alcanzar estas metas, el programa hace uso de diferentes algoritmos que se
+            describir\'an en los apartados siguientes
+        \subsection{C\'omo funciona la b\'usqueda?}
+            Para brindar resultados, Moogle, hace uso de un {\it modelo vectorial}, el cual 
+            consiste en considerar como vectores n-dimensionales a los archivos .txt y a la consulta;
+            y luego hallar el coseno del \'angulo formado entre estos con el fin de hallar los
+            vectores con menor \'angulo, es decir, los vectores que m\'as  se aproximan.\\
+                Para esta abstracci\'on de considerar un texto como un vector n-dimensional se usa
+            el principio TF-IDF. Si el lector desea saber m\'as sobre este principio consulte \cite{TF-IDF}.
+        \subsection{Se pueden usar chirimbolos!}
+            Con el fin de hacer m\'as certera las consulta del usuario, se pueden utilizar los siguientes operadores:
+            \begin{itemize}
+                \item {\bf Operador \^\ :} Se usa antepuesto inmediatamente a una palabra e indica que todos los documentos brindados
+                deben contener dicha palabra (Ejemplo: \^\ Garfield).
+                \item {\bf Operador ! :} Se usa antepuesto inmediatamente a una palabra e indica que ninguno de los documentos brindados
+                deben contener dicha palabra (Ejemplo: !Garfield).
+                \item {\bf Operador * :} Se usa antepuesto inmediatamente a una palabra e indica que esa palabra es importante en la
+                b\'usqueda. Es decir, si un documento contiene esta palabra su Score quedar\'a multiplicado x2. Su efecto es aditivo, es decir, pueden ponerse varios para aumentar a\'un m\'as la importancia
+                de la palabra  (Ejemplo: ***Garfield).
+                \item {\bf Operador \~\ :} Se usa entre dos palabras separado por espacios. Indica que entre m\'as cercanas sean estas palabras en
+                un documento m\'as importante ser\'a este, puesto que el Score quedar\'a multiplicado por un coeficiente entre 1 y 10. (Ejemplo: Garfield \~\ Odi).
+                \item {\bf Operador " :} Se usan para seleccionar una frase, uno al principio y otro al final. Indica que dicha frase debe aparecer textual 
+                en todos los resultados de la b\'usqueda (Ejemplo: "Garfield ama a la laza\~na").
+                \item {\bf Operador ' :} Se usan para seleccionar una frase, uno al principio y otro al final. Indica que dicha frase no puede aparecer textual 
+                en ninguno de los resultados de la b\'usqueda (Ejemplo: 'Garfield odia a Odi').
+            \end{itemize}
+        \subsection{Puede que hayas querido decir...}
+            Tener faltas de ortograf\'ia no nos va a impedir trabajar con Moogle ya que este est\'a dise\~nado para ofrecer {\it b\'usquedas alternativas}
+            cuando la hecha por el usuario no tiene resultados(ya sea por errores en la escrituta o por la no aparici\'on de coincidencias en nuestros documentos).
+            Esta sugerencia aparecer\'a en la parte inferior del caj\'on de b\'usqueda con color de fuente azul(palabra caliente).
+    \section{Sobre la implementaci\'on}
+        Nuestro c\'odigo trabaja con tres clases: Moogle, la clase principal; Metodos, clase para agrupar los diferentes m\'etodos que se necesitan en Moogle; y Ficha,
+         clase que caracteriza a los diferentes documentos y es usada en todo el c\'odigo indistintamente. La clase Moogle cuenta con dos m\'etodos , el constructor y Query().
+         Al cargar nuestra p\'agina principal en el navegador una instancia de Moogle es creada, por lo cual se ejecuta el constructor de la clase y se cargan los documentos(enti\'endase
+         aplicar el principio del TF-IDF a los documentos). Para ello se hace uso de diferentes m\'etodos de la clase Metodos y almacenando las informaciones en diferenres instancias de ficha.
+        \subsection{Flujo}
+            \subsubsection{Constructor Moogle()}
+                El constructor de la clase Moogle se encarga de cargar los archivos .txt y calcularles su TF-IDF. En este proceso son utilizados dos m\'etodos est\'aticos de la clase Metodos. 
+                Adem\'as de guardar los resultados obtenidos en la propiedad TFIDF de las instancias de ficha, tambi\'en son almacenadas las posiciones de cada palabra del documento en un diccionario
+                que asocia cada string con una lista de enteros(esto tambi\'en constituye una propiedad de ficha), para luego facilitar la implementaci\'on del operador \~\ .
+            \subsection{M\'etodo Query}
+                El m\'etodo Query comienza inicializando en 1 la propiedad Score de todos los documentos(fichas) que tenemos. La propiedad Score 
+                de la clase ficha, contiene un n\'umero que representa la importancia de ese documento para una determinada b\'usqueda. Por defecto esta propiedad
+                es inicializada en 1 y sus incrementos se realizan con el producto usual, es decir: al calcular el coseno entre el vector que representa
+                a la query y el que representa a un documento, este valor se le multiplica a la propiedad Score; al usar determinados operadores que deben incrementar el Score
+                por un coeficiente determinado, simplemente se multiplica el Score por ese valor. La importancia principal de este procedimiento reside
+                en que en determinadas circunstancias es necesario anular algunos Score e independientemente de lo que ocurra luego, estos no incrementan
+                m\'as; al multiplicar un Score por cero se logra lo deseado.\\
+
+                A continuaci\'on se procede a calcular el TFIDF de la consulta haciendo uso de otro m\'etodo de la clase Metodos. En este punto son implementados los operadores de b\'usqueda tambi\'en,
+                los cuales afectaran directamente a la propiedad Score de los documentos.
+                Nuestro programa le mostrar\'a al usuario con los resultados un peque\~no fragmento de su texto en el que aparezca la palabra con mayor TFIDF de la consulta que contenga el documento. 
+                Por esta raz\'on, cuando se calcula el TFIDF de las palabras en la consulta, tambi\'en se guardan un orden de estas de acuerdo a su importancia.\\
+                Ahora estamos listos para hallar el coseno entre el vector que representa la consulta y los que representan a los diferentes documentos. Para esto se llama al m\'etodo HallaCoseno()
+                de la clase Metodos y guardamos estos valores multiplic\'andoselos al Score de cada documento. Bajo este criterio ordenaremos los documentos de tal forma que ser\'a
+                {\it mejor} aquel con mayor Score.\\
+
+                Para seleccionar el fragmento de texto que acompa\~nar\'a a los resultados, escogemos la palabra m\'as importante de la consulta(con mayor TF-IDF) que este documento contenga y seleccionamos 300
+                caracteres despu\'es de la primera aparici\'on de esta palabra.\\
+
+                Con los documentos m\'as relevantes para una determinada consulta, Snippet para ellos y sus Score se realizan diferentes instancias de la clase SearchItem.\\
+                Para lograr las sugerencias mencionadas anteriormente cuando no hay resultados para la consulta se aplica el algoritmo de Levenshtein. Para mayor comprensi\'on consulte \cite{Levenshtein}.\\
+
+                Con las instancias de SearchItem y las sugerencias, instanciamos un objeto de la clase SearchResult y esta es la que devuelve el m\'etodo Query, dando as\'i los resultados buscados.
+
+
+
+    \newpage
+    \begin{thebibliography}{5}
+        \bibitem{TF-IDF} https://es.m.wikipiedia.org/wiki/Tf-idf
+        \bibitem{Levenshtein} https://es.m.wikipiedia.org/wiki/Distancia\_de\_Levenshtein
+    \end{thebibliography}
+\end{document}

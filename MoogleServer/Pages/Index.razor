@@ -1,0 +1,57 @@
+﻿@page "/"
+
+<PageTitle>Moogle!</PageTitle>
+<body>
+<img id="mooglev" align="right" src="acostado.png" alt="">
+<img id="abrir" align="left" src="lupa.png" alt="">
+<div id="busqueda">
+    <div id="complejo">
+        <div>
+        <img  id="acostado" src="moogleh.png"  alt="">
+        </div>
+        <input id="cuadro" class="p-1 my-4"  @onkeyup="KeyHandler" @bind="query" placeholder="Introduzca su búsqueda">
+        <button type="default" class="btn btn-primary" @onclick="RunQuery">Buscar</button>
+        @if (!string.IsNullOrEmpty(result.Suggestion)) {
+        <div class="suggestion">
+            <p>Puede que hayas querido decir <strong><a href="#" @onclick="sugiere">@result.Suggestion</a></strong></p>
+        </div>
+        }
+    </div>
+    <div id="global">
+        <div id="mensaje">
+            <ul class="results">
+            @foreach (var item in result.Items()) {
+                <div class="texto">
+                    <li>
+                        <div class="item">
+                            <p class="title">@item.Title</p>
+                            <p>... @item.Snippet...</p>
+                        </div>
+                    </li>
+                </div>
+            }
+            </ul>
+        </div>
+    </div>
+
+</div>
+@code {
+    private string query = "";
+    private SearchResult result = new SearchResult();
+
+    Moogle busqueda = new Moogle();
+    
+    private void RunQuery() {
+        result = busqueda.Query(query);
+    }
+    private void KeyHandler(KeyboardEventArgs args){
+        if(args.Key=="Enter"){
+            result=busqueda.Query(query);
+        }
+    }
+    private void sugiere(){
+        result = busqueda.Query(result.Suggestion);
+        query = result.Suggestion;
+    }
+}
+</body>

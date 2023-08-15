@@ -1,0 +1,62 @@
+.results {
+    text-align: left;
+    padding-left: 0px !important;
+}
+
+.item .title {
+    font-size: large;
+    font-weight: bold;
+}
+body {
+    background-color: rgb(176, 221, 236);
+}
+#cuadro{
+    margin-top: 5px !important;
+    margin-bottom: 5px !important;
+}
+.busqueda{
+    position: relative;
+    background-position: 300px;
+
+}
+#complejo{
+    margin-left:350px;
+}
+#abrir {
+    margin-top: -200px;
+    position:relative ;
+    top: 210px;
+    left: 10px;
+    height: 200px;
+
+}
+#mooglev{
+    margin-top: 23px;
+    position: relative;
+    height: 190px;
+}
+#acostado{
+    width: 400px;
+    background-position: center;
+}
+
+#global{
+    height:380px;
+    width: 1298px;
+    background: rgb(176, 221, 236);
+    overflow-y: scroll;
+}
+#mensaje{
+    height:auto;
+}
+.texto{
+    border: 1px solid #663202;
+    padding: 4px;
+    background: rgb(176, 221, 236);
+}
+li{
+    list-style: none;
+}
+.btn{
+    background-color: #ff7300 !important;
+}
